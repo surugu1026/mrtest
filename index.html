@@ -1,161 +1,85 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>作業フロー モックアップ（4ステップ）</title>
-  <!-- CSS を正しく読み込む -->
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <title>作業フローモックアップ（4ステップ）</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./styles.css" />
+  <!-- Supabase JS v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <!-- ヘッダー -->
   <header class="header">
     <button id="menuBtn" class="menu-btn" aria-label="メニュー">☰</button>
-    <h1 class="app-title">作業フロー モックアップ（4ステップ）</h1>
-    <!-- 音声検知開始/停止ボタン（ローカル判定） -->
-    <button id="voiceBtn" class="btn" type="button" aria-label="音声検知開始">🎙️ 音声検知開始</button>
+    <h1 class="app-title">作業フローモックアップ（4ステップ）</h1>
+    <button id="voiceBtn" class="menu-btn" aria-label="音声検知開始">🎙️</button>
   </header>
 
   <!-- スライドメニュー -->
-  <aside id="sideMenu" class="side-menu" aria-hidden="true">
-    <nav>
-      <ul class="menu-list">
-        <!-- 第1階層：基礎編（見出し・クリック不可） -->
-        <li class="menu-section">
-          <span class="menu-ico">🧑‍🔬</span>
-          <span class="menu-section-text">基礎編</span>
-        </li>
-        <!-- 第2階層：リンク（テキストリンク） -->
-        <li>
-          <a href="#" class="menu-link" data-target="room-entry">
-            <span class="menu-ico">🚪</span> 入室の仕方
-          </a>
-        </li>
-        <li>
-          <a href="#" class="menu-link" data-target="labcoat">
-            <span class="menu-ico">🧥</span> 白衣の着方
-          </a>
-        </li>
-        <li>
-          <a href="#" class="menu-link" data-target="handwash">
-            <span class="menu-ico">🧼</span> 手洗いの仕方
-          </a>
-        </li>
-
-        <!-- 第1階層：標準作業編（見出し・クリック不可） -->
-        <li class="menu-section">
-          <span class="menu-ico">📘</span>
-          <span class="menu-section-text">標準作業編</span>
-        </li>
-        <!-- 第2階層：リンク（テキストリンク） -->
-        <li>
-          <a href="#" class="menu-link" data-target="cell-passaging">
-            <span class="menu-ico">🧪</span> 細胞継代作業
-          </a>
-        </li>
-        <li>
-          <a href="#" class="menu-link" data-target="xx-task">
-            <span class="menu-ico">⚙️</span> XX作業
-          </a>
-        </li>
-        <li>
-          <a href="#" class="menu-link" data-target="yy-task">
-            <span class="menu-ico">🛠️</span> YY作業
-          </a>
-        </li>
-
-        <!-- 第1階層：リンク（太字） NG集 / かたちスキャン -->
-        <li>
-          <a href="#" class="menu-link-top" data-target="ng-collection">
-            <span class="menu-ico">🎬</span><span class="menu-link-top-text">NG集</span>
-          </a>
-        </li>
-        <li>
-          <a href="#" class="menu-link-top" data-target="shape-scan">
-            <span class="menu-ico">📷</span><span class="menu-link-top-text">かたちスキャン</span>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </aside>
+  <nav id="sideMenu" class="side-menu" aria-hidden="true">
+    <ul class="menu-list">
+      <li><button class="menu-link-top" data-target="cell-passaging"><span class="menu-ico">🧪</span><span class="menu-link-top-text">細胞継代作業</span></button></li>
+      <li class="menu-section"><span class="menu-ico">🔧</span><span class="menu-section-text">基礎編</span></li>
+      <li><button class="menu-link" data-target="room-entry"><span class="menu-ico">🚪</span>入室の仕方</button></li>
+      <li><button class="menu-link" data-target="labcoat"><span class="menu-ico">🥼</span>白衣の着方</button></li>
+      <li><button class="menu-link" data-target="handwash"><span class="menu-ico">🧼</span>手洗いの仕方</button></li>
+      <li class="menu-section"><span class="menu-ico">⚙️</span><span class="menu-section-text">標準作業編</span></li>
+      <li><button class="menu-link" data-target="xx-task"><span class="menu-ico">🛠️</span>XX作業</button></li>
+      <li><button class="menu-link" data-target="yy-task"><span class="menu-ico">🧰</span>YY作業</button></li>
+      <li class="menu-section"><span class="menu-ico">🎬</span><span class="menu-section-text">NG集</span></li>
+      <li><button class="menu-link" data-target="ng-collection"><span class="menu-ico">📼</span>NG集</button></li>
+      <li class="menu-section"><span class="menu-ico">📷</span><span class="menu-section-text">かたちスキャン</span></li>
+      <li><button class="menu-link" data-target="shape-scan"><span class="menu-ico">🎥</span>かたちスキャン</button></li>
+    </ul>
+  </nav>
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
-  <!-- レイアウト：左カメラ／右パネル -->
+  <!-- レイアウト -->
   <main class="layout">
     <!-- 左：カメラ -->
     <section class="camera">
-      <video id="cameraVideo" class="camera-video" autoplay playsinline></video>
+      <video id="cameraVideo" class="camera-video" playsinline muted></video>
       <div id="cameraFallback" class="camera-fallback" hidden>
-        カメラ／音声検知で問題が発生しています。権限・HTTPS・社内プロキシ設定をご確認ください。
+        カメラ/マイクの取得に関する注意がここに表示されます。
       </div>
     </section>
 
-    <!-- 右：手順パネル＋AIアシスタント -->
-    <div class="right-stack">
-      <!-- 手順パネル -->
-      <section class="step-panel" aria-label="作業手順">
+    <!-- 右：手順＋AI -->
+    <section class="right-stack">
+      <div class="step-panel" aria-live="polite">
         <div class="step-body">
-          <!-- タイトル群（右上の 1/4 ラベルは無し） -->
           <div class="step-meta">
-            <div class="resources"><span>作業名：</span><strong id="taskName">—</strong></div>
-            <div class="resources"><span>工程：</span><strong id="processName">—</strong></div>
-            <div class="resources"><span>ステップ：</span>
-              <strong id="stepIndex">—</strong>/<strong id="stepTotal">—</strong>
-            </div>
+            <div>作業名：<strong id="taskName">—</strong></div>
+            <div>工程：<strong id="processName">—</strong></div>
+            <div>ステップ：<strong id="stepIndex">—</strong>/<strong id="stepTotal">—</strong></div>
           </div>
-          <h2 class="step-title">手順内容</h2>
           <ol id="stepDesc" class="step-list"></ol>
-
-<br>
-          <!-- 使用器具・注意アイコン・使用溶液 -->
-          <div class="resources">
-            <span>　　　使用器具：</span>
-            <strong id="tools">—</strong>
-            <!-- 注意アイコンは使用器具の右側に配置 -->
-            <img src="image2.png" alt="注意" class="caution-icon" />
-
-            <!-- 使用溶液は改行表示（CSSで pre-line） -->
-            <div class="solutions-line">
-              <span>　　　使用溶液：</span>
-              <strong id="solutions">—</strong>
-            </div>
-
-            <!-- 音声が検出されたら、ここに注意文言を表示 -->
-            <div id="cautionNote" class="caution-note" hidden></div>
-          </div>
+          <div class="resources"><span>使用器具：</span><span id="tools">—</span></div>
+          <div class="resources"><span>使用溶液：</span><span id="solutions">—</span></div>
+          <div id="cautionNote" class="caution-note" hidden></div>
         </div>
-
         <div class="step-actions">
-          <button id="playBtn" class="btn" type="button">動画再生</button>
-          <button id="nextBtn" class="btn primary" type="button">
-            <span class="btn-label">次へ進む</span>
-          </button>
+          <button id="playBtn" class="btn primary" data-video-file=""><span class="btn-label">動画再生</span></button>
+          <button id="nextBtn" class="btn"><span class="btn-label">次へ進む</span></button>
         </div>
-      </section>
+      </div>
 
-      <!-- AIアシスタント -->
-      <section class="assistant-panel" aria-label="AIアシスタント">
-        <header class="assistant-header">
-          <strong>AIアシスタント</strong>
-          <div class="dots">
-            <span class="dot" aria-hidden="true"></span>
-            <span class="dot" aria-hidden="true"></span>
-            <span class="dot" aria-hidden="true"></span>
-          </div>
-        </header>
-        <div id="chatArea" class="assistant-body">
-          <div class="msg bot">こんにちは。質問があれば入力してください。</div>
+      <div class="assistant-panel">
+        <div class="assistant-header">
+          <div>AIアシスタント</div>
+          <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
         </div>
+        <div id="chatArea" class="assistant-body" role="log" aria-live="polite"></div>
         <div class="assistant-input">
-          <input id="chatInput" type="text" placeholder="メッセージを入力…" />
-          <button id="sendBtn" class="btn" type="button">送信</button>
+          <input id="chatInput" type="text" placeholder="質問があれば入力してください…" />
+          <button id="sendBtn" class="btn">送信</button>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </main>
 
-  <!-- JS は body 末尾で読み込む -->
-  <script src="app.js"></script>
+  <!-- アプリ本体 -->
+  <script src="./app.js"></script>
 </body>
 </html>
