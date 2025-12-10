@@ -6,8 +6,8 @@
   <title>作業フローモックアップ（4ステップ）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon（任意）: プロジェクトに favicon.png を置いた場合 -->
-  <link rel="icon" type="image/png" href="./favicon.png" />
+  <!-- Favicon（任意。404が気になる場合は配置してください） -->
+  <link rel="icon" href="./favicon.ico" />
 
   <!-- スタイル -->
   <link rel="stylesheet" href="./styles.css" />
@@ -15,7 +15,7 @@
   <!-- Supabase JS v2 CDN（正しいscriptタグ） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- アプリ本体（DOM構築後に実行） -->
+  <!-- アプリ本体（defer推奨） -->
   <script src="./app.js" defer></script>
 </head>
 <body>
@@ -25,7 +25,7 @@
     <button id="voiceBtn" class="menu-btn" aria-label="音声検知開始">🎙️</button>
   </header>
 
-  <!-- スライドメニュー -->
+  <!-- スライドメニュー（省略せずそのまま） -->
   <nav id="sideMenu" class="side-menu" aria-hidden="true">
     <ul class="menu-list">
       <li><button class="menu-link-top" data-target="cell-passaging"><span class="menu-ico">🧪</span><span class="menu-link-top-text">細胞継代作業</span></button></li>
@@ -44,9 +44,8 @@
   </nav>
   <div id="overlay" class="overlay" aria-hidden="true"></div>
 
-  <!-- レイアウト -->
+  <!-- レイアウト（左：カメラ／右：手順＋AI） -->
   <main class="layout">
-    <!-- 左：カメラ -->
     <section class="camera">
       <video id="cameraVideo" class="camera-video" playsinline muted></video>
       <div id="cameraFallback" class="camera-fallback" hidden>
@@ -54,7 +53,6 @@
       </div>
     </section>
 
-    <!-- 右：手順＋AI -->
     <section class="right-stack">
       <div class="step-panel" aria-live="polite">
         <div class="step-body">
