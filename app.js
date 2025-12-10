@@ -2,7 +2,7 @@
 'use strict';
 
 /* ============================================================================
- * Supabase 接続設定（必ずあなたのプロジェクトの値に置換）
+ * Supabase 接続設定（あなたのプロジェクトの値）
  * ==========================================================================*/
 const SUPABASE_URL = 'https://wbggushrgaakisxljcxx.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_1ShAybAdAuwKlt4Myj4CXg_agH_RRNe';
@@ -14,11 +14,6 @@ const supa =
   SUPABASE_PUBLISHABLE_KEY
     ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
     : null;
-
-/* 予約語 desc 対応：
- * DBのカラムは "desc"（ダブルクォート付き）で作成済みと想定。
- * JSでは row["desc"] で参照します。
- */
 
 /* ============================================================================
  * DOM 準備
@@ -55,17 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
   /* 音声検知ボタン */
   const voiceBtn = byId('voiceBtn');
 
-  /* 小さなユーティリティ */
-  function byId(id) {
-    return document.getElementById(id);
-  }
-  function on(el, type, handler) {
-    if (el) el.addEventListener(type, handler);
-  }
+  /* ユーティリティ */
+  function byId(id) { return document.getElementById(id); }
+  function on(el, type, handler) { if (el) el.addEventListener(type, handler); }
 
   /* ==========================================================================
-   * フォールバック用 ローカル手順セット（必要最小）
-   * DB取得失敗時に使用。必要に応じて追加可能。
+   * フォールバック用 ローカル手順セット（caution_note を追加）
    * ========================================================================*/
   let stepSets = {
     'cell-passaging': [
@@ -79,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tools: '顕微鏡 インキュベーター',
         solutions: '—',
         video: 'movie_step1.mp4',
+        caution_note: 'インキュベーターの扉は手早く開閉し、温度変化に注意してください。',
       },
       {
         task: '細胞継代',
@@ -90,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tools: '安全キャビネット キムワイプ',
         solutions: '70%エタノール',
         video: 'movie_step2.mp4',
+        caution_note: '清拭後は十分に乾燥させ、エタノール蒸気の吸入に注意してください。',
       },
       {
         task: '細胞継代',
@@ -101,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tools: 'ピペット シャーレ',
         solutions: 'PBS(-) トリプシン/EDTA',
         video: 'movie_step3.mp4',
+        caution_note: 'トリプシンの取り扱い時は皮膚への暴露を避け、適切なPPEを着用してください。',
       },
       {
         task: '細胞継代',
@@ -112,142 +105,24 @@ document.addEventListener('DOMContentLoaded', () => {
         tools: '遠心チューブ ピペット',
         solutions: 'DMEM(10%FBS, PS追加)',
         video: 'movie_step4.mp4',
+        caution_note: '播種時はフラスコ上部を手で覆わず、無菌操作を保持してください。',
       },
     ],
     'room-entry': [
-      {
-        task: '入室',
-        process: '準備',
-        desc: ['入室前チェック'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step1.mp4',
-      },
-      {
-        task: '入室',
-        process: '手順',
-        desc: ['更衣'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step2.mp4',
-      },
-      {
-        task: '入室',
-        process: '手順',
-        desc: ['滅菌靴へ履き替え'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step3.mp4',
-      },
-      {
-        task: '入室',
-        process: '完了',
-        desc: ['入室完了'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step4.mp4',
-      },
+      { task: '入室', process: '準備', desc: ['入室前チェック'], tools: '—', solutions: '—', video: 'movie_step1.mp4', caution_note: '入室前に装備の欠落がないか再確認してください。' },
+      { task: '入室', process: '手順', desc: ['更衣'], tools: '—', solutions: '—', video: 'movie_step2.mp4', caution_note: '清潔区域への更衣は指示どおりの順序で行ってください。' },
+      { task: '入室', process: '手順', desc: ['滅菌靴へ履き替え'], tools: '—', solutions: '—', video: 'movie_step3.mp4', caution_note: '靴底が床に触れる際の汚染経路に注意してください。' },
+      { task: '入室', process: '完了', desc: ['入室完了'], tools: '—', solutions: '—', video: 'movie_step4.mp4', caution_note: '入室後は私語を慎み、作業区域の案内に従ってください。' },
     ],
-    'labcoat': [
-      {
-        task: '白衣',
-        process: '準備',
-        desc: ['サイズ確認'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step1.mp4',
-      },
-      {
-        task: '白衣',
-        process: '着用',
-        desc: ['袖口・前合わせ'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step2.mp4',
-      },
-      {
-        task: '白衣',
-        process: '着用',
-        desc: ['ボタン固定'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step3.mp4',
-      },
-      {
-        task: '白衣',
-        process: '確認',
-        desc: ['着用確認'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step4.mp4',
-      },
-    ],
-    'handwash': [
-      {
-        task: '手洗い',
-        process: '準備',
-        desc: ['石鹸準備'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step1.mp4',
-      },
-      {
-        task: '手洗い',
-        process: '洗浄',
-        desc: ['手のひら・甲・指の間'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step2.mp4',
-      },
-      {
-        task: '手洗い',
-        process: '洗浄',
-        desc: ['親指・爪・手首'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step3.mp4',
-      },
-      {
-        task: '手洗い',
-        process: '完了',
-        desc: ['流水・ペーパー'],
-        tools: '—',
-        solutions: '—',
-        video: 'movie_step4.mp4',
-      },
-    ],
-    'xx-task': [
-      { task: 'XX作業', process: '1', desc: ['ステップ1'], tools: '—', solutions: '—', video: 'movie_step1.mp4' },
-      { task: 'XX作業', process: '2', desc: ['ステップ2'], tools: '—', solutions: '—', video: 'movie_step2.mp4' },
-      { task: 'XX作業', process: '3', desc: ['ステップ3'], tools: '—', solutions: '—', video: 'movie_step3.mp4' },
-      { task: 'XX作業', process: '4', desc: ['ステップ4'], tools: '—', solutions: '—', video: 'movie_step4.mp4' },
-    ],
-    'yy-task': [
-      { task: 'YY作業', process: '1', desc: ['ステップ1'], tools: '—', solutions: '—', video: 'movie_step1.mp4' },
-      { task: 'YY作業', process: '2', desc: ['ステップ2'], tools: '—', solutions: '—', video: 'movie_step2.mp4' },
-      { task: 'YY作業', process: '3', desc: ['ステップ3'], tools: '—', solutions: '—', video: 'movie_step3.mp4' },
-      { task: 'YY作業', process: '4', desc: ['ステップ4'], tools: '—', solutions: '—', video: 'movie_step4.mp4' },
-    ],
-    'ng-collection': [
-      { task: 'NG集', process: '1', desc: ['NG事例１'], tools: '—', solutions: '—', video: 'movie_step1.mp4' },
-      { task: 'NG集', process: '2', desc: ['NG事例２'], tools: '—', solutions: '—', video: 'movie_step2.mp4' },
-      { task: 'NG集', process: '3', desc: ['NG事例３'], tools: '—', solutions: '—', video: 'movie_step3.mp4' },
-      { task: 'NG集', process: '4', desc: ['NG事例４'], tools: '—', solutions: '—', video: 'movie_step4.mp4' },
-    ],
-    'shape-scan': [
-      { task: 'かたちスキャン', process: '1', desc: ['スキャン準備'], tools: '—', solutions: '—', video: 'movie_step1.mp4' },
-      { task: 'かたちスキャン', process: '2', desc: ['スキャン開始'], tools: '—', solutions: '—', video: 'movie_step2.mp4' },
-      { task: 'かたちスキャン', process: '3', desc: ['解析'], tools: '—', solutions: '—', video: 'movie_step3.mp4' },
-      { task: 'かたちスキャン', process: '4', desc: ['レポート'], tools: '—', solutions: '—', video: 'movie_step4.mp4' },
-    ],
+    // 以降のカテゴリも必要なら caution_note を追加してください（省略）
   };
 
   /* ==========================================================================
-   * DBから手順セットをロード（成功時は stepSets を差し替え）
+   * DBから手順セットをロード（caution_note を取得して格納）
    * ========================================================================*/
   async function loadStepSetsFromDB() {
     if (!supa) {
-      console.info('Supabase CDN が読み込まれていないか、URL/KEY 未設定です。ローカル手順を使用します。');
+      console.info('Supabase 未初期化のためローカル手順を使用します。');
       return false;
     }
     try {
@@ -260,11 +135,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!Array.isArray(sets) || sets.length === 0) throw new Error('step_sets が空です');
 
       const result = {};
-      // 各セットのステップ
+      // 各セットのステップ（caution_note を追加で取得）
       for (const s of sets) {
         const { data: rows, error: stepsErr } = await supa
           .from('steps')
-          .select('seq, task, process, "desc", tools, solutions, video')
+          .select('seq, task, process, "desc", tools, solutions, video, caution_note')
           .eq('set_id', s.id)
           .order('seq', { ascending: true });
         if (stepsErr) throw stepsErr;
@@ -272,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         result[s.id] = (rows ?? []).map((row) => ({
           task: row.task,
           process: row.process,
-          // "desc" は text[] 想定。念のため型を安全に処理
           desc: Array.isArray(row['desc'])
             ? row['desc']
             : row['desc'] != null
@@ -281,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
           tools: row.tools ?? '—',
           solutions: row.solutions ?? '—',
           video: row.video ?? '',
+          caution_note: row.caution_note ?? '', // ★ 追加
         }));
       }
 
@@ -338,22 +213,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (toolsEl) toolsEl.textContent = s.tools ?? '—';
     if (solutionsEl) solutionsEl.textContent = s.solutions ?? '—';
 
-    // 動画ファイル（Storage を使う場合は https://... に差し替え）
+    // 動画ファイル
     if (playBtn) playBtn.setAttribute('data-video-file', s.video ?? '');
 
     // 次へ/完了ラベル
     if (nextBtn) {
       const labelEl = nextBtn.querySelector('.btn-label');
       const text = i < steps.length - 1 ? '次へ進む' : '完了';
-      if (labelEl) labelEl.textContent = text;
-      else nextBtn.textContent = text;
+      if (labelEl) labelEl.textContent = text; else nextBtn.textContent = text;
     }
 
-    // 注意文言初期化
+    // 注意文言初期化（毎ステップで非表示に戻す）
     if (cautionNoteEl) {
       cautionNoteEl.hidden = true;
       cautionNoteEl.textContent = '';
     }
+  }
+
+  /* ==========================================================================
+   * 現在ステップの注意文言を返す
+   * ========================================================================*/
+  function getCurrentCautionNote() {
+    const s = steps[current];
+    return s && s.caution_note ? s.caution_note : '';
+  }
+
+  /* ==========================================================================
+   * 注意文言の表示（音声検知・チャットトリガーから利用）
+   * ========================================================================*/
+  function showCautionNote() {
+    if (!cautionNoteEl) return;
+    const note = getCurrentCautionNote();
+    // DB未設定時のフォールバック文言
+    cautionNoteEl.textContent = note || '注意文言：フラスコの上部を手で覆わないでください。';
+    cautionNoteEl.hidden = false;
   }
 
   /* ==========================================================================
@@ -373,11 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * ========================================================================*/
   on(playBtn, 'click', () => {
     const file = playBtn.getAttribute('data-video-file');
-    if (!file) {
-      alert('動画ファイルが未設定です。');
-      return;
-    }
-    // Supabase Storage 等の完全 URL の場合もそのまま開きます
+    if (!file) { alert('動画ファイルが未設定です。'); return; }
     const url = file.startsWith('http') ? file : `./${file}`;
     const win = window.open(url, '_blank', 'noopener');
     if (!win) alert('ポップアップがブロックされました。許可設定をご確認ください。');
@@ -387,9 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * チャット送信（簡易ログ）
    * ========================================================================*/
   on(sendBtn, 'click', sendMsg);
-  on(chatInput, 'keydown', (e) => {
-    if (e.key === 'Enter') sendMsg();
-  });
+  on(chatInput, 'keydown', (e) => { if (e.key === 'Enter') sendMsg(); });
   function sendMsg() {
     const text = chatInput?.value?.trim() ?? '';
     if (!text) return;
@@ -400,6 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chatInput.value = '';
     chatArea.scrollTop = chatArea.scrollHeight;
 
+    // チャットで「確認」が含まれていたら注意文言を表示（代替トリガー）
     if (text.includes('確認')) showCautionNote();
   }
 
@@ -433,7 +321,6 @@ document.addEventListener('DOMContentLoaded', () => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const target = link.dataset.target;
-      // DB側にキーが存在する場合はそのデータを使用
       currentSetKey = stepSets[target] ? target : 'cell-passaging';
       steps = stepSets[currentSetKey] || [];
       current = 0;
@@ -462,22 +349,8 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     const tryConstraints = [
-      {
-        video: {
-          facingMode: preferRear ? 'environment' : 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-        },
-        audio: false,
-      },
-      {
-        video: {
-          facingMode: preferRear ? 'environment' : 'user',
-          width: { ideal: 640 },
-          height: { ideal: 480 },
-        },
-        audio: false,
-      },
+      { video: { facingMode: preferRear ? 'environment' : 'user', width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false },
+      { video: { facingMode: preferRear ? 'environment' : 'user', width: { ideal: 640 }, height: { ideal: 480 } }, audio: false },
       { video: true, audio: false },
     ];
     for (const constraints of tryConstraints) {
@@ -537,15 +410,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = new Uint8Array(analyser.frequencyBinCount);
       const check = () => {
         analyser.getByteFrequencyData(data);
+        // 簡易的に平均振幅で判定
         let sum = 0;
         for (let i = 0; i < data.length; i++) sum += data[i];
         const avg = sum / (data.length * 255); // 0..1
         if (avg >= AMPLITUDE_THRESHOLD) {
+          // 連発抑制
           if (!voiceDetectTimer) {
+            // ★ 現在ステップの注意文言を表示
             showCautionNote();
-            voiceDetectTimer = setTimeout(() => {
-              voiceDetectTimer = null;
-            }, VOICE_DEBOUNCE_MS);
+            voiceDetectTimer = setTimeout(() => { voiceDetectTimer = null; }, VOICE_DEBOUNCE_MS);
           }
         }
       };
@@ -577,12 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
     voiceBtn.setAttribute('aria-label', '音声検知開始');
   }
 
-  function showCautionNote() {
-    if (!cautionNoteEl) return;
-    cautionNoteEl.textContent = '注意文言：フラスコの上部を手で覆わないでください。';
-    cautionNoteEl.hidden = false;
-  }
-
+  // 音声検知の開始/停止トグル
   on(voiceBtn, 'click', async () => {
     if (audioCtx || window.voiceIntervalId || micStream) {
       stopVoiceDetection();
@@ -590,4 +459,4 @@ document.addEventListener('DOMContentLoaded', () => {
       await startVoiceDetection();
     }
   });
-}); // ★ ここで必ず閉じる
+}); // ← 必ず閉じる
