@@ -11,8 +11,8 @@ const supa =
   typeof window !== 'undefined' &&
   typeof window.supabase !== 'undefined' &&
   SUPABASE_URL &&
-  SUPABASE_ANON_KEY
-    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  SUPABASE_PUBLISHABLE_KEY
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
     : null;
 
 /* 予約語 desc 対応：
@@ -590,5 +590,6 @@ document.addEventListener('DOMContentLoaded', () => {
       await startVoiceDetection();
     }
   });
+
 
 
