@@ -5,9 +5,18 @@
   <meta charset="UTF-8" />
   <title>作業フローモックアップ（4ステップ）</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Favicon（任意）: プロジェクトに favicon.png を置いた場合 -->
+  <link rel="icon" type="image/png" href="./favicon.png" />
+
+  <!-- スタイル -->
   <link rel="stylesheet" href="./styles.css" />
-  <!-- Supabase JS v2 CDN -->
+
+  <!-- Supabase JS v2 CDN（正しいscriptタグ） -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- アプリ本体（DOM構築後に実行） -->
+  <script src="./app.js" defer></script>
 </head>
 <body>
   <header class="header">
@@ -78,8 +87,5 @@
       </div>
     </section>
   </main>
-
-  <!-- アプリ本体 -->
-  <script src="./app.js"></script>
 </body>
 </html>
