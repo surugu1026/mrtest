@@ -590,6 +590,4 @@ document.addEventListener('DOMContentLoaded', () => {
       await startVoiceDetection();
     }
   });
-
-
-
+}); // ★ ここで必ず閉じる
