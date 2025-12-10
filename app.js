@@ -4,8 +4,8 @@
 /* ============================================================================
  * Supabase 接続設定（必ずあなたのプロジェクトの値に置換）
  * ==========================================================================*/
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR_PUBLIC_ANON_KEY';
+const SUPABASE_URL = 'https://wbggushrgaakisxljcxx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_1ShAybAdAuwKlt4Myj4CXg_agH_RRNe';
 const supa =
   typeof window !== 'undefined' &&
   typeof window.supabase !== 'undefined' &&
@@ -589,3 +589,4 @@ document.addEventListener('DOMContentLoaded', () => {
       await startVoiceDetection();
     }
   });
+
